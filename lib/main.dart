@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 primarySwatch: Colors.grey,
               ),
-              home: Scaffold(
+              home: const Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
                 ),

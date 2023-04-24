@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
-import 'package:intl/intl.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'clock_page.dart';
 
 class HomePage extends StatefulWidget {
   final List<Application> appList;
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Application> apps = [];
   TextEditingController searchingController = TextEditingController();
+  String systemTime = getSystemTime();
 
   @override
   void initState() {
@@ -51,32 +53,38 @@ class _HomePageState extends State<HomePage> {
                 if (value == 0) {
                   searchingController.text = '';
                   FocusScope.of(context).unfocus();
+                  setState(() {
+                    apps = [];
+                  });
                 }
               },
               children: [
-                Container(
-                  child: Center(
-                    child: Text(
-                      getSystemTime(),
-                      style: const TextStyle(color: Colors.white, fontSize: 80),
-                    ),
-                  ),
-                ),
+                ClockPage(appList: widget.appList),
                 Column(
                   children: [
                     Container(
                       color: Colors.black,
                       child: TextField(
                         autofocus: true,
-                        decoration: const InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
+                        decoration: InputDecoration(
+                          focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                           hintText: ' Search',
-                          hintStyle: TextStyle(color: Colors.white),
-                          prefixIcon: Icon(
+                          hintStyle: const TextStyle(color: Colors.white),
+                          prefixIcon: const Icon(
                             Icons.search,
                             color: Colors.white,
+                          ),
+                          //add icon options
+                          suffixIcon: GestureDetector(
+                            //Open settings
+                            onTap: () =>
+                                DeviceApps.openApp('com.android.settings'),
+                            child: const Icon(
+                              Icons.settings,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         style: const TextStyle(color: Colors.white),
@@ -84,9 +92,20 @@ class _HomePageState extends State<HomePage> {
                         onChanged: (value) {
                           setState(() {
                             apps = widget.appList
-                                .where((app) => app.appName
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
+                                .where((app) =>
+                                    partialRatio(app.appName, value) > 30 ||
+                                    partialRatio(
+                                            app.packageName.split('.').last,
+                                            value) >
+                                        30 ||
+                                    app.packageName
+                                        .split('.')
+                                        .last
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase()) ||
+                                    app.appName
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase()))
                                 .toList();
                           });
                         },
@@ -102,6 +121,9 @@ class _HomePageState extends State<HomePage> {
                           return GestureDetector(
                             onTap: () {
                               searchingController.text = '';
+                              setState(() {
+                                apps = [];
+                              });
                               DeviceApps.openApp(app.packageName);
                             },
                             child: ListTile(
@@ -128,9 +150,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-String getSystemTime() {
-  var now = DateTime.now();
-  return DateFormat('kk:mm').format(now);
 }
