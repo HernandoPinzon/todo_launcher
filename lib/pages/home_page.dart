@@ -93,11 +93,11 @@ class _HomePageState extends State<HomePage> {
                           setState(() {
                             apps = widget.appList
                                 .where((app) =>
-                                    partialRatio(app.appName, value) > 30 ||
+                                    partialRatio(app.appName, value) > 50 ||
                                     partialRatio(
                                             app.packageName.split('.').last,
                                             value) >
-                                        30 ||
+                                        50 ||
                                     app.packageName
                                         .split('.')
                                         .last
