@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_launcher/services/app_list.dart';
+import '../providers/applist_info.dart';
 import 'clock_page.dart';
 
 class HomePage extends StatefulWidget {
-  final List<Application> appList;
-  const HomePage({super.key, required this.appList});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Application> apps = [];
+  List<LocalAppWithIcon> apps = [];
   TextEditingController searchingController = TextEditingController();
   String systemTime = getSystemTime();
 
@@ -30,9 +32,9 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  List<Application> getApps() {
+  List<LocalAppWithIcon> getApps(AppListInfo appListInfo) {
     if (apps.isEmpty) {
-      return widget.appList;
+      return appListInfo.appList;
     } else {
       return apps;
     }
@@ -40,6 +42,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AppListInfo appListInfo = context.watch<AppListInfo>();
     return Scaffold(
       body: SafeArea(
         child: GestureDetector(
@@ -59,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               children: [
-                ClockPage(appList: widget.appList),
+                ClockPage(),
                 Column(
                   children: [
                     Container(
@@ -91,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                         controller: searchingController,
                         onChanged: (value) {
                           setState(() {
-                            apps = widget.appList
+                            apps = appListInfo.appList
                                 .where((app) =>
                                     partialRatio(app.appName, value) > 50 ||
                                     partialRatio(
@@ -115,9 +118,9 @@ class _HomePageState extends State<HomePage> {
                       child: ListView.builder(
                         keyboardDismissBehavior:
                             ScrollViewKeyboardDismissBehavior.onDrag,
-                        itemCount: getApps().length,
+                        itemCount: getApps(appListInfo).length,
                         itemBuilder: (context, index) {
-                          Application app = getApps()[index];
+                          LocalAppWithIcon app = getApps(appListInfo)[index];
                           return GestureDetector(
                             onTap: () {
                               searchingController.text = '';
@@ -132,10 +135,8 @@ class _HomePageState extends State<HomePage> {
                                 style: const TextStyle(color: Colors.white),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              leading: Image.memory(
-                                  (app as ApplicationWithIcon).icon,
-                                  width: 32,
-                                  height: 32),
+                              leading:
+                                  Image.memory(app.icon, width: 35, height: 35),
                             ),
                           );
                         },

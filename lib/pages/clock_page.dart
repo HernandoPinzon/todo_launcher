@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/applist_info.dart';
+import '../services/app_list.dart';
 
 class ClockPage extends StatefulWidget {
-  final List<Application>? appList;
   const ClockPage({
     super.key,
-    required this.appList,
   });
 
   @override
@@ -31,6 +33,7 @@ class _ClockPageState extends State<ClockPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppListInfo appListInfo = context.watch<AppListInfo>();
     return Center(
       child: Column(
         children: [
@@ -40,7 +43,7 @@ class _ClockPageState extends State<ClockPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Application? app = widget.appList?.singleWhere((e) =>
+                    LocalAppWithIcon app = appListInfo.appList.singleWhere((e) =>
                         e.packageName.contains("clock") &&
                         e.packageName.contains("android"));
                     if (app != null) {
@@ -54,7 +57,7 @@ class _ClockPageState extends State<ClockPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Application? app = widget.appList?.singleWhere((e) =>
+                    LocalAppWithIcon app = appListInfo.appList.singleWhere((e) =>
                         e.packageName.contains("calendar") &&
                         e.packageName.contains("android"));
                     if (app != null) {
@@ -78,7 +81,7 @@ class _ClockPageState extends State<ClockPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Application? app = widget.appList?.singleWhere((e) =>
+                    LocalAppWithIcon app = appListInfo.appList.singleWhere((e) =>
                         e.packageName.contains("dialer") &&
                         e.packageName.contains("android"));
                     if (app != null) {
@@ -93,7 +96,7 @@ class _ClockPageState extends State<ClockPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Application? app = widget.appList?.singleWhere((e) =>
+                    LocalAppWithIcon app = appListInfo.appList.singleWhere((e) =>
                         e.packageName.contains("camera") &&
                         e.packageName.contains("android"));
                     if (app != null) {
