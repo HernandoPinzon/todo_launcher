@@ -26,7 +26,7 @@ class AppListService {
         });
       });
       List<Future<LocalAppWithIcon>> list = appList.map((e) async {
-        List<String> app = e.split(':');
+        List<String> app = e.split(':::');
         //get icons
         final path = await _localPath;
         Uint8List icon = await File('$path/icons/${app[1]}').readAsBytes();
@@ -97,7 +97,7 @@ class LocalApp {
 
   @override
   String toString() {
-    return '$appName:$packageName';
+    return '$appName:::$packageName';
   }
 }
 

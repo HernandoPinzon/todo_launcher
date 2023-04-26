@@ -57,7 +57,7 @@ class _ClockPageState extends State<ClockPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    LocalAppWithIcon app = appListInfo.appList.singleWhere((e) =>
+                    LocalAppWithIcon app = appListInfo.appList.firstWhere((e) =>
                         e.packageName.contains("calendar") &&
                         e.packageName.contains("android"));
                     if (app != null) {

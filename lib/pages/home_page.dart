@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -103,6 +105,7 @@ class _HomePageState extends State<HomePage> {
                                         .toLowerCase()
                                         .contains(value.toLowerCase()))
                                 .toList();
+                            apps = orderList(apps, value);
                           });
                         },
                       ),
@@ -144,4 +147,15 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+//order list of apps by his partial ratio of his appname nad packageName with a given searching text
+List<LocalAppWithIcon> orderList(List<LocalAppWithIcon> list, String text) {
+  log(" ");
+  list.sort((a, b) {
+    int aRatio = partialRatio(a.appName, text);
+    int bRatio = partialRatio(b.appName, text);
+    return bRatio.compareTo(aRatio);
+  });
+  return list;
 }
