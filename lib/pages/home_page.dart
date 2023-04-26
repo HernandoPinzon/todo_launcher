@@ -68,20 +68,13 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       color: Colors.black,
                       child: TextField(
-                        autofocus: true,
                         decoration: InputDecoration(
                           focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                           hintText: ' Search',
                           hintStyle: const TextStyle(color: Colors.white),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          //add icon options
                           suffixIcon: GestureDetector(
-                            //Open settings
                             onTap: () =>
                                 DeviceApps.openApp('com.android.settings'),
                             child: const Icon(

@@ -1,14 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_apps/device_apps.dart';
-
-import '../providers/applist_info.dart';
 
 /*save and get app list from shared preferences and get installed apps, verify
 if the 2 lists are the same and if not, update the shared preferences list
