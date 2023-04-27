@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_launcher/extencions/diacritics_aware_string.dart';
 import 'package:todo_launcher/services/app_list.dart';
 import '../providers/applist_info.dart';
 import 'clock_page.dart';
@@ -91,18 +92,17 @@ class _HomePageState extends State<HomePage> {
                           setState(() {
                             apps = appListInfo.appList
                                 .where((app) =>
-                                    partialRatio(app.appName, value) > 50 ||
+                                    partialRatio(app.appName.toLowerCase().withoutDiacriticalMarks.trim(), value.toLowerCase()) > 50 ||
                                     partialRatio(
-                                            app.packageName.split('.').last,
-                                            value) >
+                                            app.packageName.split('.').last.toLowerCase(),
+                                            value.toLowerCase()) >
                                         50 ||
                                     app.packageName
                                         .split('.')
                                         .last
                                         .toLowerCase()
                                         .contains(value.toLowerCase()) ||
-                                    app.appName
-                                        .toLowerCase()
+                                    app.appName.toLowerCase().withoutDiacriticalMarks.trim()
                                         .contains(value.toLowerCase()))
                                 .toList();
                             apps = orderList(apps, value);
@@ -151,10 +151,25 @@ class _HomePageState extends State<HomePage> {
 
 //order list of apps by his partial ratio of his appname nad packageName with a given searching text
 List<LocalAppWithIcon> orderList(List<LocalAppWithIcon> list, String text) {
-  log(" ");
   list.sort((a, b) {
-    int aRatio = partialRatio(a.appName, text);
-    int bRatio = partialRatio(b.appName, text);
+    String aName = a.appName.toLowerCase().withoutDiacriticalMarks.trim();
+    String bName = b.appName.toLowerCase().withoutDiacriticalMarks.trim();
+    int aRatio = partialRatio(aName, text);
+    int bRatio = partialRatio(bName, text);
+    if (aName.contains(text.toLowerCase())) {
+      if (aName.startsWith(text.toLowerCase())) {
+        aRatio = 1000;
+      } else {
+        aRatio = 100;
+      }
+    }
+    if (bName.contains(text.toLowerCase())) {
+      if (bName.startsWith(text.toLowerCase())) {
+        bRatio = 1000;
+      } else {
+        bRatio = 100;
+      }
+    }
     return bRatio.compareTo(aRatio);
   });
   return list;
