@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 import '../services/app_list.dart';
 
-class AppListInfo with ChangeNotifier {
+class AppInfo with ChangeNotifier {
   List<LocalAppWithIcon> _appList = [];
 
-  AppListInfo() {
+  AppInfo() {
     getApps().then((value) {
       appList = value;
       notifyListeners();

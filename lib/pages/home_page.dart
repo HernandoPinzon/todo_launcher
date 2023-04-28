@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_launcher/extencions/diacritics_aware_string.dart';
 import 'package:todo_launcher/services/app_list.dart';
-import '../providers/applist_info.dart';
+import '../providers/app_info.dart';
 import 'clock_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  List<LocalAppWithIcon> getApps(AppListInfo appListInfo) {
+  List<LocalAppWithIcon> getApps(AppInfo appListInfo) {
     if (apps.isEmpty) {
       return appListInfo.appList;
     } else {
@@ -45,7 +43,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    AppListInfo appListInfo = context.watch<AppListInfo>();
+    AppInfo appListInfo = context.watch<AppInfo>();
     return Scaffold(
       body: SafeArea(
         child: GestureDetector(
@@ -65,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               children: [
-                ClockPage(),
+                const ClockPage(),
                 Column(
                   children: [
                     Container(
