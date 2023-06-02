@@ -8,6 +8,7 @@ import 'package:todo_launcher/widgets/stream_status_widget.dart';
 
 import '../providers/app_info.dart';
 import '../services/app_list.dart';
+import '../widgets/add_task_dialog_widget.dart';
 import '../widgets/notifications_widget.dart';
 
 class ClockPage extends StatefulWidget {
@@ -97,6 +98,20 @@ class _ClockPageState extends State<ClockPage> {
                 },
                 child: const Icon(
                   Icons.call,
+                  color: Colors.white,
+                  size: 35,
+                ),
+              ),
+              //add button to add a task
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AddTaskDialog(),
+                  );
+                },
+                child: const Icon(
+                  Icons.add,
                   color: Colors.white,
                   size: 35,
                 ),

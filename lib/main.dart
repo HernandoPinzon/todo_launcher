@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:todo_launcher/providers/app_info.dart';
 import 'pages/home_page.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/app_info.dart';
 import 'providers/channel_streaming_info.dart';
+import 'providers/task_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider<AppInfo>(create: (_) => AppInfo()),
           ChangeNotifierProvider<ChannelStreamingInfo>(create: (_) => ChannelStreamingInfo()),
-
+          ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
         ],
         builder: (context, _) {
           return MaterialApp(

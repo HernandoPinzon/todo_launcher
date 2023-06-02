@@ -7,7 +7,6 @@ import 'package:device_apps/device_apps.dart';
 
 /*save and get app list from shared preferences and get installed apps, verify
 if the 2 lists are the same and if not, update the shared preferences list
-
 */
 class AppListService {
   static Future<List<LocalAppWithIcon>> getApps() async {

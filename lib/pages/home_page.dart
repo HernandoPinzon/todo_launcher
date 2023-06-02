@@ -116,14 +116,19 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           LocalAppWithIcon app = getApps(appListInfo)[index];
                           return GestureDetector(
-                            onTap: () {
-                              searchingController.text = '';
-                              setState(() {
-                                apps = [];
-                              });
-                              DeviceApps.openApp(app.packageName);
+                            onLongPress: () {
+                              //TODO: add a dialog to confirm
+                              DeviceApps.openAppSettings(app.packageName);
                             },
+
                             child: ListTile(
+                              onTap: () {
+                                searchingController.text = '';
+                                setState(() {
+                                  apps = [];
+                                });
+                                DeviceApps.openApp(app.packageName);
+                              },
                               title: Text(
                                 app.appName,
                                 style: const TextStyle(color: Colors.white),

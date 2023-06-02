@@ -1,23 +1,45 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_launcher/widgets/stream_status_widget.dart';
+import 'package:todo_launcher/widgets/task_item_widget.dart';
 import '../providers/channel_streaming_info.dart';
+import '../providers/task_provider.dart';
+import '../services/task_service.dart';
 
 class NotificationsWidget extends StatelessWidget {
   static List<Widget> notifications = [];
-  const NotificationsWidget({
-    super.key,
-  });
+  const NotificationsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    notifications.clear();
+    // Obtener el provider de TaskProvider
+    TaskProvider taskProvider = context.watch<TaskProvider>();
+
+    // Clear notifications
+    NotificationsWidget.notifications.clear();
+
+    // Agregar StreamStatusWidget si el canal está en streaming
     ChannelStreaming channelStreaming =
         context.watch<ChannelStreamingInfo>().channelStreaming;
     if (channelStreaming.isStreaming) {
-      notifications.add(const StreamStatusWidget());
+      NotificationsWidget.notifications.add(const StreamStatusWidget());
     }
-    return notifications.isEmpty
+
+    // Agregar TaskItemWidget para cada tarea en la lista de tareas
+    for (Task task in taskProvider.tasks) {
+      if (task.isVisible) {
+        NotificationsWidget.notifications.add(
+          TaskItemWidget(
+            title: task.title,
+            isComplete: task.isComplete,
+          ),
+        );
+      }
+    }
+
+    return NotificationsWidget.notifications.isEmpty
         ? const SizedBox()
         : Container(
             margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -28,9 +50,9 @@ class NotificationsWidget extends StatelessWidget {
             child: ListView.builder(
               shrinkWrap: true,
               padding: const EdgeInsets.all(20),
-              itemCount: notifications.length,
+              itemCount: NotificationsWidget.notifications.length,
               itemBuilder: (context, index) {
-                return notifications[index];
+                return NotificationsWidget.notifications[index];
               },
             ),
           );
