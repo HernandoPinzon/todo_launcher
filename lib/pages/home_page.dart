@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -44,6 +47,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     AppInfo appListInfo = context.watch<AppInfo>();
+    PageController pageController = PageController(initialPage: 0);
     return Scaffold(
       body: SafeArea(
         child: GestureDetector(
@@ -53,6 +57,7 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             color: Colors.black,
             child: PageView(
+              controller: pageController,
               onPageChanged: (value) {
                 if (value == 0) {
                   searchingController.text = '';
@@ -90,9 +95,18 @@ class _HomePageState extends State<HomePage> {
                           setState(() {
                             apps = appListInfo.appList
                                 .where((app) =>
-                                    partialRatio(app.appName.toLowerCase().withoutDiacriticalMarks.trim(), value.toLowerCase()) > 50 ||
                                     partialRatio(
-                                            app.packageName.split('.').last.toLowerCase(),
+                                            app.appName
+                                                .toLowerCase()
+                                                .withoutDiacriticalMarks
+                                                .trim(),
+                                            value.toLowerCase()) >
+                                        50 ||
+                                    partialRatio(
+                                            app.packageName
+                                                .split('.')
+                                                .last
+                                                .toLowerCase(),
                                             value.toLowerCase()) >
                                         50 ||
                                     app.packageName
@@ -100,7 +114,10 @@ class _HomePageState extends State<HomePage> {
                                         .last
                                         .toLowerCase()
                                         .contains(value.toLowerCase()) ||
-                                    app.appName.toLowerCase().withoutDiacriticalMarks.trim()
+                                    app.appName
+                                        .toLowerCase()
+                                        .withoutDiacriticalMarks
+                                        .trim()
                                         .contains(value.toLowerCase()))
                                 .toList();
                             apps = orderList(apps, value);
@@ -120,7 +137,6 @@ class _HomePageState extends State<HomePage> {
                               //TODO: add a dialog to confirm
                               DeviceApps.openAppSettings(app.packageName);
                             },
-
                             child: ListTile(
                               onTap: () {
                                 searchingController.text = '';
@@ -128,6 +144,10 @@ class _HomePageState extends State<HomePage> {
                                   apps = [];
                                 });
                                 DeviceApps.openApp(app.packageName);
+                                //exec with delay to avoid the app to be closed
+                                pageController.animateToPage(0,
+                                    duration: const Duration(milliseconds: 1),
+                                    curve: Curves.easeIn);
                               },
                               title: Text(
                                 app.appName,
