@@ -41,19 +41,21 @@ class NotificationsWidget extends StatelessWidget {
 
     return NotificationsWidget.notifications.isEmpty
         ? const SizedBox()
-        : Container(
-            margin: const EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(45, 129, 129, 129),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(20),
-              itemCount: NotificationsWidget.notifications.length,
-              itemBuilder: (context, index) {
-                return NotificationsWidget.notifications[index];
-              },
+        : Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(45, 129, 129, 129),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(20),
+                itemCount: NotificationsWidget.notifications.length,
+                itemBuilder: (context, index) {
+                  return NotificationsWidget.notifications[index];
+                },
+              ),
             ),
           );
   }

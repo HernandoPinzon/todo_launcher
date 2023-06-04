@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_launcher/extencions/diacritics_aware_string.dart';
 import 'package:todo_launcher/services/app_list.dart';
 import '../providers/app_info.dart';
+import 'app_list_page.dart';
 import 'clock_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,7 +47,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    AppInfo appListInfo = context.watch<AppInfo>();
     PageController pageController = PageController(initialPage: 0);
     return Scaffold(
       body: SafeArea(
@@ -69,100 +69,7 @@ class _HomePageState extends State<HomePage> {
               },
               children: [
                 const ClockPage(),
-                Column(
-                  children: [
-                    Container(
-                      color: Colors.black,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          hintText: ' Search',
-                          hintStyle: const TextStyle(color: Colors.white),
-                          suffixIcon: GestureDetector(
-                            onTap: () =>
-                                DeviceApps.openApp('com.android.settings'),
-                            child: const Icon(
-                              Icons.settings,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        style: const TextStyle(color: Colors.white),
-                        controller: searchingController,
-                        onChanged: (value) {
-                          setState(() {
-                            apps = appListInfo.appList
-                                .where((app) =>
-                                    partialRatio(
-                                            app.appName
-                                                .toLowerCase()
-                                                .withoutDiacriticalMarks
-                                                .trim(),
-                                            value.toLowerCase()) >
-                                        50 ||
-                                    partialRatio(
-                                            app.packageName
-                                                .split('.')
-                                                .last
-                                                .toLowerCase(),
-                                            value.toLowerCase()) >
-                                        50 ||
-                                    app.packageName
-                                        .split('.')
-                                        .last
-                                        .toLowerCase()
-                                        .contains(value.toLowerCase()) ||
-                                    app.appName
-                                        .toLowerCase()
-                                        .withoutDiacriticalMarks
-                                        .trim()
-                                        .contains(value.toLowerCase()))
-                                .toList();
-                            apps = orderList(apps, value);
-                          });
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.onDrag,
-                        itemCount: getApps(appListInfo).length,
-                        itemBuilder: (context, index) {
-                          LocalAppWithIcon app = getApps(appListInfo)[index];
-                          return GestureDetector(
-                            onLongPress: () {
-                              //TODO: add a dialog to confirm
-                              DeviceApps.openAppSettings(app.packageName);
-                            },
-                            child: ListTile(
-                              onTap: () {
-                                searchingController.text = '';
-                                setState(() {
-                                  apps = [];
-                                });
-                                DeviceApps.openApp(app.packageName);
-                                //exec with delay to avoid the app to be closed
-                                pageController.animateToPage(0,
-                                    duration: const Duration(milliseconds: 1),
-                                    curve: Curves.easeIn);
-                              },
-                              title: Text(
-                                app.appName,
-                                style: const TextStyle(color: Colors.white),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              leading:
-                                  Image.memory(app.icon, width: 35, height: 35),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                )
+                AppListPage(pageController: pageController, searchingController: searchingController)
               ],
             ),
           ),
@@ -170,30 +77,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-//order list of apps by his partial ratio of his appname nad packageName with a given searching text
-List<LocalAppWithIcon> orderList(List<LocalAppWithIcon> list, String text) {
-  list.sort((a, b) {
-    String aName = a.appName.toLowerCase().withoutDiacriticalMarks.trim();
-    String bName = b.appName.toLowerCase().withoutDiacriticalMarks.trim();
-    int aRatio = partialRatio(aName, text);
-    int bRatio = partialRatio(bName, text);
-    if (aName.contains(text.toLowerCase())) {
-      if (aName.startsWith(text.toLowerCase())) {
-        aRatio = 1000;
-      } else {
-        aRatio = 100;
-      }
-    }
-    if (bName.contains(text.toLowerCase())) {
-      if (bName.startsWith(text.toLowerCase())) {
-        bRatio = 1000;
-      } else {
-        bRatio = 100;
-      }
-    }
-    return bRatio.compareTo(aRatio);
-  });
-  return list;
 }

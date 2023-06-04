@@ -7,6 +7,9 @@ import '../services/task_service.dart';
 class AddTaskDialog extends StatelessWidget {
   final TextEditingController _taskController = TextEditingController();
 
+  AddTaskDialog({super.key});
+  
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
