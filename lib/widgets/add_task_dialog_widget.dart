@@ -32,7 +32,7 @@ class AddTaskDialog extends StatelessWidget {
             String taskTitle = _taskController.text;
             if (taskTitle.isNotEmpty) {
               TaskProvider taskProvider = context.read<TaskProvider>();
-              taskProvider.addTask(Task(title: taskTitle));
+              taskProvider.addTask(title: taskTitle);
             }
             Navigator.of(context).pop();
           },

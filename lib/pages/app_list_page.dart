@@ -79,7 +79,7 @@ class _AppListPageState extends State<AppListPage> {
             controller: widget.searchingController,
             onChanged: (value) {
               setState(() {
-                apps = orderList(apps, value);
+                apps = filterApps(appListInfo, value);
                 apps = orderList(apps, value);
               });
             },

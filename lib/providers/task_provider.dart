@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -23,20 +25,25 @@ class TaskProvider with ChangeNotifier {
     tasks = loadedTasks;
   }
 
-  void addTask(Task task) {
+  void addTask({required String title}) {
+    Task task = Task(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+    );
     _tasks.add(task);
     TaskService.saveTasks(_tasks);
     notifyListeners();
   }
 
-  void updateTask(int index, {bool? isComplete, bool? isVisible}) {
-    if (index >= 0 && index < _tasks.length) {
+  void updateTask(String taskId, {bool? isComplete, bool? isVisible}) {
+    int index = _tasks.indexWhere((task) => task.id == taskId);
+    if (index != -1) {
       Task task = _tasks[index];
       if (isComplete != null) {
         task.isComplete = isComplete;
         if (isComplete) {
           Timer(const Duration(seconds: 1), () {
-            updateTask(index, isVisible: false);
+            updateTask(taskId, isVisible: false);
           });
         }
       }
@@ -48,12 +55,13 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  void completeTask(int index, bool isComplete) {
-    updateTask(index, isComplete: isComplete);
+  void completeTask(String taskId, bool isComplete) {
+    updateTask(taskId, isComplete: isComplete);
   }
 
-  void deleteTask(int index) {
-    if (index >= 0 && index < _tasks.length) {
+  void deleteTask(String taskId) {
+    int index = _tasks.indexWhere((task) => task.id == taskId);
+    if (index != -1) {
       _tasks.removeAt(index);
       TaskService.saveTasks(_tasks);
       notifyListeners();

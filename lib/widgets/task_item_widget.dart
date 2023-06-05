@@ -8,9 +8,10 @@ import '../providers/task_provider.dart';
 class TaskItemWidget extends StatelessWidget {
   final String title;
   final bool isComplete;
+  final String id;
 
   const TaskItemWidget(
-      {super.key, required this.title, required this.isComplete});
+      {super.key, required this.title, required this.isComplete, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +28,12 @@ class TaskItemWidget extends StatelessWidget {
         ),
         trailing: IconButton(
           icon: isComplete
-              ? Icon(Icons.check_circle, color: Colors.green)
-              : Icon(Icons.radio_button_unchecked),
+              ? const Icon(Icons.check_circle, color: Colors.green)
+              : const Icon(Icons.radio_button_unchecked),
           onPressed: () {
             TaskProvider taskProvider = context.read<TaskProvider>();
-            int taskIndex =
-                taskProvider.tasks.indexWhere((task) => task.title == title);
-            if (taskIndex != -1) {
-              bool newIsComplete = !isComplete;
-              taskProvider.completeTask(taskIndex, newIsComplete);
-            }
+            bool newIsComplete = !isComplete;
+            taskProvider.completeTask(id, newIsComplete);
           },
         ),
       ),

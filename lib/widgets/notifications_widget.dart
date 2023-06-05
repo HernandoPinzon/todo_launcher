@@ -34,6 +34,7 @@ class NotificationsWidget extends StatelessWidget {
           TaskItemWidget(
             title: task.title,
             isComplete: task.isComplete,
+            id: task.id,
           ),
         );
       }
@@ -41,7 +42,7 @@ class NotificationsWidget extends StatelessWidget {
 
     return NotificationsWidget.notifications.isEmpty
         ? const SizedBox()
-        : Expanded(
+        : Flexible(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 30),
               decoration: BoxDecoration(
